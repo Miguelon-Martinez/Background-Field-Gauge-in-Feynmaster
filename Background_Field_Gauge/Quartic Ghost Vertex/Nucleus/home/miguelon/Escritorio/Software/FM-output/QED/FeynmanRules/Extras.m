@@ -1,2 +1,0 @@
-DWs = {};
-Neutrinos = {};
