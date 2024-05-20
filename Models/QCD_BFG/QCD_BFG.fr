@@ -1,0 +1,111 @@
+
+(******* Index definitions ********)
+IndexRange[Index[Gluon]] = NoUnfold[Range[8]]
+IndexRange[Index[Colour]] = NoUnfold[Range[3]]
+IndexRange[Index[Generation]] = Range[3]
+
+IndexStyle[Gluon, a]
+IndexStyle[Colour, m]
+IndexStyle[Generation, f]
+
+(******** Parameters ********)
+M$Parameters = {
+gs == {TeXName -> "g_s", Renormalization -> {gs -> gs + dgs}},
+Muq == {Indices -> {Index[Generation],Index[Generation]}, Renormalization -> {Muq -> Muq + dMuq}},
+mu == {TeXName -> "m_u", Renormalization -> {mu -> mu + dmu}},
+mc == {TeXName -> "m_c", Renormalization -> {mc -> mc + dmc}},
+mt == {TeXName -> "m_t", Renormalization -> {mt -> mt + dmt}},
+xiG == {TeXName -> "\\xi_G"},
+dgs == {Counterterm -> True,TeXName -> "\\delta g_s"},
+dMuq == {Counterterm -> True,Indices -> {Index[Generation],Index[Generation]}},
+dmu == {Counterterm -> True, TeXName -> "\\delta m_u"},
+dmc == {Counterterm -> True, TeXName -> "\\delta m_c"},
+dmt == {Counterterm -> True, TeXName -> "\\delta m_t"},
+dG  == {Counterterm -> True, TeXName -> "\\delta G"},
+dZghG == {Counterterm -> True, TeXName -> "\\delta Z_{gh}", ComplexParameter -> True},
+dZuq == {Counterterm -> True,TeXName -> "\\delta Z^{uq}",Indices -> {Index[Generation],Index[Generation]}, ComplexParameter -> True}
+}
+  
+  
+
+(******* Gauge Groups *******)
+M$GaugeGroups = {
+SU3C == {
+  Abelian           -> False,
+  CouplingConstant  -> gs,
+  GaugeBoson        -> B,
+  StructureConstant -> f,
+  Representations   -> {T,Colour},
+  SymmetricTensor   -> dSUN
+}
+}
+
+
+
+M$ClassesDescription = {
+V[4] == {
+		ClassName -> A,
+		SelfConjugate -> True,
+		TeXName -> "A",
+		Indices -> {Index[Gluon]},
+		Mass -> 0},
+V[5] == {
+		ClassName -> B,
+		SelfConjugate -> True,
+		TeXName -> "B",
+		Indices -> {Index[Gluon]},
+		Mass -> 0},
+U[4] == {
+		ClassName -> ghG,
+		TeXName -> "c_g",
+		TeXAntiName -> "\\bar{c_g}",
+		SelfConjugate -> False,
+		Indices -> {Index[Gluon]},
+		Ghost -> G,
+		Mass -> 0,
+		Renormalization-> {ghG[aa_] -> ghG[aa] + 1/2 dZghG ghG[aa]},
+		QuantumNumbers -> {GhostNumber -> 1}},
+
+F[3] == {
+		ClassName -> uq,
+		ClassMembers -> {u, c, t},
+		TeXName -> {"u","c","t"},
+		TeXAntiName -> {"\\bar{u}","\\bar{c}","\\bar{t}"},
+		FlavorIndex -> Generation,
+		SelfConjugate -> False,
+		Indices -> {Index[Generation], Index[Colour]},
+		Mass -> {mu,mc,mt},
+		Renormalization  -> {uq -> uq + 1/2 dZuq.uq},
+		QuantumNumbers -> {Q -> 2/3}}
+}
+
+
+
+
+LGaugeCubic :=  gs f[aa,bb,cc] A[imu,aa] (del[B[inu,bb],imu] B[inu,cc] - del[B[imu,bb],inu] B[inu,cc] - 1/xiG del[B[inu,bb],inu] B[imu,cc] );
+
+LGaugeQuartic :=  gs^2/2 f[aa,bb,rr] f[rr,cc,dd] ( A[imu,aa] A[inu,bb] B[imu,cc] B[inu,dd] + A[imu,aa] B[inu,bb] A[imu,cc] B[inu,dd] + A[imu,aa] B[inu,bb] B[imu,cc] A[inu,dd] + 1/xiG A[imu,aa] B[imu,bb] A[inu,cc] B[inu,dd] );
+
+LGaugeCubicAcorrection :=  -1/2 gs f[aa,bb,cc] ( del[A[inu,aa],imu] - del[A[imu,aa],inu] ) B[imu,bb] B[inu,cc];
+
+
+LGauge := LGaugeCubic + LGaugeQuartic + LGaugeCubicAcorrection;
+
+
+LGf3 :=  gs f[aa,bb,cc] A[imu,bb] (ghGbar[aa] del[ghG[cc],imu] - del[ghGbar[aa],imu] ghG[cc]);
+
+LGf4 := gs^2 f[aa,bb,rr] f[rr,cc,dd] ghGbar[aa] (A[imu,bb] + B[imu,bb]) A[imu,cc] ghG[dd];
+
+
+LGhost := LGf3 + LGf4;
+
+
+
+(***** Extra information for FeynMaster *****)
+M$FCeqs = {xiG->1};
+
+M$RestFile = "MyRestrictionsQCD.rst";
+
+M$PrMassFL = False;
+
+M$GFreno = True;

@@ -1,0 +1,21 @@
+Notebook[{Cell[BoxData["$FeynRulesPath =  SetDirectory[ \"/home/miguelon/Escritorio/Software/FeynRules/feynrules-current/\"];
+\ndirNuc = \"/home/miguelon/Escritorio/Software/FeynMaster/Nucleus/\";
+\n
+\nOff[PacletManager`Name::shdw];
+\nOff[FeynRules`Name::shdw]; 
+\nOff[CloudFunction::argt]; 
+\nOff[Syntax::stresc]; 
+\n
+\n<< FeynRules`
+\ndirFRmod = \"/home/miguelon/Escritorio/Software/FeynMaster/Models/QCD_BFG/\";
+\nSetDirectory[dirFRmod];
+\nLoadModel[\"QCD_BFG.fr\"];
+\n
+\nLoadRestriction[\"MyRestrictionsQCD.rst\"];
+\n
+\n<< PreControl.m
+\nGet[\"Preamble.m\", Path->{dirNuc}]
+\n
+\nGet[\"Addendum.m\", Path->{dirNuc}]
+\nIf[RenoLogic,
+\nGet[\"Renapp.m\", Path -> {dirNuc}]]; "], "Input"]}]
