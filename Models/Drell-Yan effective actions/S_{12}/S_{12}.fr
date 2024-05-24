@@ -1,0 +1,142 @@
+
+(******* Index definitions ********)
+IndexRange[Index[Gluon]] = NoUnfold[Range[8]]
+IndexRange[Index[Colour]] = NoUnfold[Range[3]]
+IndexRange[Index[Generation]] = Range[3]
+
+IndexStyle[Gluon, a]
+IndexStyle[Colour, m]
+IndexStyle[Generation, f]
+
+(******** Parameters ********)
+M$Parameters = {
+gs == {TeXName -> "g_s", Renormalization -> {gs -> gs + dgs}},
+Muq == {Indices -> {Index[Generation],Index[Generation]}, Renormalization -> {Muq -> Muq + dMuq}},
+mu == {TeXName -> "m_u", Renormalization -> {mu -> mu + dmu}},
+mc == {TeXName -> "m_c", Renormalization -> {mc -> mc + dmc}},
+mt == {TeXName -> "m_t", Renormalization -> {mt -> mt + dmt}},
+xiG == {TeXName -> "\\xi_G"},
+dgs == {Counterterm -> True,TeXName -> "\\delta g_s"},
+dMuq == {Counterterm -> True,Indices -> {Index[Generation],Index[Generation]}},
+dmu == {Counterterm -> True, TeXName -> "\\delta m_u"},
+dmc == {Counterterm -> True, TeXName -> "\\delta m_c"},
+dmt == {Counterterm -> True, TeXName -> "\\delta m_t"},
+dG  == {Counterterm -> True, TeXName -> "\\delta G"},
+dZghG == {Counterterm -> True, TeXName -> "\\delta Z_{gh}", ComplexParameter -> True},
+dZuq == {Counterterm -> True,TeXName -> "\\delta Z^{uq}",Indices -> {Index[Generation],Index[Generation]}, ComplexParameter -> True},
+dZpsi == {Counterterm -> True,TeXName -> "\\delta Z^{\\psi}", ComplexParameter -> True},
+dZq1 == {Counterterm -> True,TeXName -> "\\delta Z^{q_1}", ComplexParameter -> True},
+dZq2 == {Counterterm -> True,TeXName -> "\\delta Z^{q_2}", ComplexParameter -> True}
+}
+  
+  
+
+(******* Gauge Groups *******)
+M$GaugeGroups = {
+SU3C == {
+  Abelian           -> False,
+  CouplingConstant  -> gs,
+  GaugeBoson        -> B,
+  StructureConstant -> f,
+  Representations   -> {T,Colour},
+  SymmetricTensor   -> dSUN
+}
+}
+
+
+
+M$ClassesDescription = {
+V[4] == {
+		ClassName -> A1,
+		SelfConjugate -> True,
+		TeXName -> "A_1",
+		Indices -> {Index[Gluon]},
+		Mass -> 0},
+V[5] == {
+		ClassName -> B,
+		SelfConjugate -> True,
+		TeXName -> "B",
+		Indices -> {Index[Gluon]},
+		Mass -> 0},
+
+V[6] == {
+		ClassName -> A2,
+		SelfConjugate -> True,
+		TeXName -> "A_2",
+		Indices -> {Index[Gluon]},
+		Mass -> 0},
+
+U[4] == {
+		ClassName -> ghG,
+		TeXName -> "c_g",
+		TeXAntiName -> "\\bar{c_g}",
+		SelfConjugate -> False,
+		Indices -> {Index[Gluon]},
+		Ghost -> G,
+		Mass -> 0,
+		Renormalization-> {ghG[aa_] -> ghG[aa] + 1/2 dZghG ghG[aa]},
+		QuantumNumbers -> {GhostNumber -> 1}},
+
+
+
+
+
+F[3] == {
+		ClassName -> psi,
+		TeXName -> "\\psi"",
+		TeXAntiName -> "\\bar{\\psi}",
+		SelfConjugate -> False,
+		Indices -> {Index[Colour]},
+		Mass -> 0,
+		Renormalization  -> {psi -> psi + 1/2 dZpsi.psi},
+		QuantumNumbers -> {Q -> 2/3}},
+
+F[4] == {
+		ClassName -> q1,
+		TeXName -> "q_1",
+		TeXAntiName -> "\\bar{q_1}",
+		SelfConjugate -> False,
+		Indices -> {Index[Colour]},
+		Mass -> 0,
+		Renormalization  -> {q1 -> q1 + 1/2 dZq1.q1},
+		QuantumNumbers -> {Q -> 2/3}},
+
+F[5] == {
+		ClassName -> q2,
+		TeXName -> "q_2"",
+		TeXAntiName -> "\\bar{q_2}",
+		SelfConjugate -> False,
+		Indices -> {Index[Colour]},
+		Mass -> 0,
+		Renormalization  -> {q2 -> q2 + 1/2 dZq2.q2},
+		QuantumNumbers -> {Q -> 2/3}}
+
+
+
+
+
+
+}
+
+
+Lfermions := gs/2 ( q1bar.Ga[imu].A1[imu,aa].T[aa].q2 + q1bar.Ga[imu].A2[imu,aa].T[aa].q2 + q2bar.Ga[imu].A1[imu,aa].T[aa].q1 + q2bar.Ga[imu].A2[imu,aa].T[aa].q1 );
+
+LGaugecubic1 := - gs/2 f[aa,bb,cc] ( del[A1[inu,aa],imu] A2[imu,bb] A2[inu,cc] + del[A2[inu,aa],imu] A1[imu,bb] A2[inu,cc] + del[A2[inu,aa],imu] A2[imu,bb] A1[inu,cc] );
+
+LGaugecubic2 := - gs/2 f[aa,bb,cc] ( del[A2[inu,aa],imu] A1[imu,bb] A1[inu,cc] + del[A1[inu,aa],imu] A2[imu,bb] A1[inu,cc] + del[A1[inu,aa],imu] A1[imu,bb] A2[inu,cc] );
+
+LGaugeQuartic := - gs^2/2 f[aa,bb,rr] f[rr,cc,dd] ( A1[imu,aa] A1[inu,bb] A2[imu,cc] A2[inu,dd] + A1[imu,aa] A1[inu,bb] A1[imu,cc] A2[inu,dd] + A2[imu,aa] A2[inu,bb] A2[imu,cc] A1[inu,dd] + A1[imu,aa] A2[inu,bb] A1[imu,cc] A2[inu,dd] + A1[imu,aa] A2[inu,bb] A2[imu,cc] A1[inu,dd] )
+
+LGauge := LGaugecubic + LGaugeQuartic
+
+
+
+(***** Extra information for FeynMaster *****)
+
+M$FCeqs = {xiG->1};
+
+M$RestFile = "MyRestrictionsQCD.rst";
+
+M$PrMassFL = False;
+
+M$GFreno = True;
